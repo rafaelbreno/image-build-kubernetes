@@ -2,7 +2,7 @@ SEVERITIES = HIGH,CRITICAL
 
 UNAME_M = $(shell uname -m)
 
-ORG ?= rancher
+ORG ?= rafiusky
 PKG ?= github.com/kubernetes/kubernetes
 SRC ?= github.com/kubernetes/kubernetes
 TAG ?= ${GITHUB_ACTION_TAG}
