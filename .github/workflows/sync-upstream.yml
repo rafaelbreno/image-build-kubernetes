@@ -1,0 +1,19 @@
+name: Sync Upstream
+run-name: Upstream Sync
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Kubernetes Release
+        uses: rancher/ecm-distro-tools/actions/sync-upstream-release@feature/auto-tag-image-build
+        with:
+          upstream-owner: 'kubernetes'
+          upstream-repo: 'kubernetes'
+          image-build-owner: ${{ github.repository_owner }}
+          image-build-repo: ${{ github.event.repository.name }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
