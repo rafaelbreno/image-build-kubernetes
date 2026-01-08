@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: runs-on,runner=8cpu-linux-x64,run-id=${{ github.run_id }},image=ubuntu22-full-x64
+    runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v6
@@ -23,26 +23,13 @@ jobs:
         echo "$(make -s log | grep TAG)" >> "$GITHUB_ENV"
         echo "$(make -s log | grep GOLANG_VERSION)" >> "$GITHUB_ENV"
 
-    - name: "Read secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github/repo/${{ github.repository }}/dockerhub/${{ github.repository_owner }}/credentials username | DOCKER_USERNAME ;
-          secret/data/github/repo/${{ github.repository }}/dockerhub/${{ github.repository_owner }}/credentials password | DOCKER_PASSWORD ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials registry | PRIME_REGISTRY ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials username | PRIME_REGISTRY_USERNAME ;
-          secret/data/github/repo/${{ github.repository }}/rancher-prime-registry/credentials password | PRIME_REGISTRY_PASSWORD
-
     - name: Build and push image
       uses: rancher/ecm-distro-tools/actions/publish-image@master
       with:
         image: hardened-kubernetes
         tag: ${{ github.event.release.tag_name }}
-        public-repo: rancher
-        public-username: ${{ env.DOCKER_USERNAME }}
-        public-password: ${{ env.DOCKER_PASSWORD }}
+        public-repo: rafiusky
+        public-username: ${{ secrets.DOCKER_USERNAME }}
+        public-password: ${{ secrets.DOCKER_PASSWORD }}
 
-        prime-repo: rancher
-        prime-registry: ${{ env.PRIME_REGISTRY }}
-        prime-username: ${{ env.PRIME_REGISTRY_USERNAME }}
-        prime-password: ${{ env.PRIME_REGISTRY_PASSWORD }}
+        push-to-prime: false
